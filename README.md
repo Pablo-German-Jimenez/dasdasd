@@ -12,7 +12,7 @@ Una aplicación web construida con React que utiliza estilos de Bootstrap y form
 
 ## 📸 Vista previa
 
-![Deploy me!]([https://your-demo-image-url.com](https://react-veterinaria-bagheera.netlify.app/)) <!-- Puedes agregar una imagen si tienes una -->
+https://bagheeraremilreactivayloca.netlify.app/
 
 ## 🛠️ Tecnologías utilizadas
 
