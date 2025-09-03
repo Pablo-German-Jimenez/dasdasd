@@ -12,8 +12,8 @@ import DoctoresPet from "../assets/doctorespets.bmp";
 import SalemPolenta from "../assets/salempolenta.bmp";
 import BagheeraBella from "../assets/bagheerabella.bmp";
 import { useForm } from "react-hook-form";
-import { useEffect,useState } from "react";
-import Swal from 'sweetalert2'
+import { useEffect, useState } from "react";
+import Swal from "sweetalert2";
 
 function FormCitas() {
   const {
@@ -22,11 +22,19 @@ function FormCitas() {
     reset,
     formState: { errors },
   } = useForm();
+//cargar datos desde local storage si existen.
 
-  const [email, setEmail] = useState([]);
+  const formConsultasLocalStorage =
+    JSON.parse(localStorage.getItem("formConsultas")) || [];
 
-  
-  
+  const [formConsultas, setFormConsultas] = useState([formConsultasLocalStorage]);
+
+
+
+
+  useEffect(() => {
+    localStorage.setItem("formConsultas", JSON.stringify("formConsultas"));
+  });
 
   const postValidation = (data) => {
     Swal.fire({
@@ -36,13 +44,14 @@ function FormCitas() {
       showConfirmButton: false,
       timer: 1500,
     });
-    console.log(data);
-    setEmail([...data,email.data])
-    reset();
+    
+    
+    reset()
+
+    setFormConsultas([...data, formConsultas.data]);
+
+    
   };
-
-  
-
 
   return (
     <>
@@ -106,10 +115,7 @@ function FormCitas() {
           </div>
         </Card.Body>
       </Card>
-      <Form
-        className="container shadow-lg p-3 mb-5 bg-body rounded-3 border border-3 border-success-subtle"
-        
-              >
+      <Form  className="container shadow-lg p-3 mb-5 bg-body rounded-3 border border-3 border-success-subtle">
         <Form.Group className="mb-3" controlId="formEmail">
           <Form.Label>Tu Email </Form.Label>
           <Form.Control
@@ -117,13 +123,17 @@ function FormCitas() {
             placeholder="Tu Email!"
             {...register("email", { required: true, maxLength: 30 })}
           />
-          {errors.email && <p className="text-danger">Campo obligatorio! hasta 30 caracteres!</p>}
+          {errors.email && (
+            <p className="text-danger">
+              Campo obligatorio! hasta 30 caracteres!
+            </p>
+          )}
         </Form.Group>
-        <Form.Group className="mb-3" controlId="celNumber" >
+        <Form.Group className="mb-3" controlId="celNumber">
           <Form.Label>Cel para contactarte</Form.Label>
           <Form.Control
             type="number"
-            placeholder="Ingresá tu numero de cel!" 
+            placeholder="Ingresá tu numero de cel!"
             {...register("number", {
               required: true,
               minLength: 8,
@@ -159,7 +169,12 @@ function FormCitas() {
             placeholder="Excluyentes, ingresar estimativos"
           />
         </Form.Group>
-         <Button onClick={handleSubmit(postValidation)} variant="primary" type="submit" className="mb-3">
+        <Button
+          onClick={handleSubmit(postValidation)}
+          variant="primary"
+          type="submit"
+          className="mb-3"
+        >
           Submit
         </Button>
       </Form>
