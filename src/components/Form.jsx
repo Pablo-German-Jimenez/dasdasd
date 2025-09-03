@@ -12,6 +12,8 @@ import DoctoresPet from "../assets/doctorespets.bmp";
 import SalemPolenta from "../assets/salempolenta.bmp";
 import BagheeraBella from "../assets/bagheerabella.bmp";
 import { useForm } from "react-hook-form";
+import { useEffect, useState } from "react";
+import Swal from "sweetalert2";
 
 function FormCitas() {
   const {
@@ -20,6 +22,19 @@ function FormCitas() {
     reset,
     formState: { errors },
   } = useForm();
+//cargar datos desde local storage si existen.
+
+  const formConsultasLocalStorage =
+    JSON.parse(localStorage.getItem("formConsultas")) || [];
+
+  const [formConsultas, setFormConsultas] = useState([formConsultasLocalStorage]);
+
+
+
+
+  useEffect(() => {
+    localStorage.setItem("formConsultas", JSON.stringify("formConsultas"));
+  });
 
   const postValidation = (data) => {
     Swal.fire({
@@ -29,7 +44,13 @@ function FormCitas() {
       showConfirmButton: false,
       timer: 1500,
     });
-    console.log(data);
+    
+    
+    reset()
+
+    setFormConsultas([...data, formConsultas.data]);
+
+    
   };
 
   return (
@@ -94,18 +115,19 @@ function FormCitas() {
           </div>
         </Card.Body>
       </Card>
-      <Form
-        className="container shadow-lg p-3 mb-5 bg-body rounded-3 border border-3 border-success-subtle"
-        onClick={handleSubmit(postValidation)}
-      >
-        <Form.Group className="mb-3" controlId="formBasicEmail">
+      <Form  className="container shadow-lg p-3 mb-5 bg-body rounded-3 border border-3 border-success-subtle">
+        <Form.Group className="mb-3" controlId="formEmail">
           <Form.Label>Tu Email </Form.Label>
           <Form.Control
             type="email"
             placeholder="Tu Email!"
-            {...register("email", { required: true, maxLength: 20 })}
+            {...register("email", { required: true, maxLength: 30 })}
           />
-          {errors.email && <p className="text-danger">Campo obligatorio!</p>}
+          {errors.email && (
+            <p className="text-danger">
+              Campo obligatorio! hasta 30 caracteres!
+            </p>
+          )}
         </Form.Group>
         <Form.Group className="mb-3" controlId="celNumber">
           <Form.Label>Cel para contactarte</Form.Label>
@@ -114,7 +136,7 @@ function FormCitas() {
             placeholder="Ingresá tu numero de cel!"
             {...register("number", {
               required: true,
-              minLength: 10,
+              minLength: 8,
               maxLength: 10,
               pattern: "d/g",
             })}
@@ -124,7 +146,7 @@ function FormCitas() {
           )}
         </Form.Group>
 
-        <Form.Group className="mb-3" controlId="celNumber">
+        <Form.Group className="mb-3" controlId="direccionPichichu">
           <Form.Label>Dirección</Form.Label>
           <Form.Control
             type="text"
@@ -143,27 +165,16 @@ function FormCitas() {
         <Form.Group className="mb-3" controlId="sintomasPichichu">
           <Form.Label>Edad,peso,síntomas</Form.Label>
           <Form.Control
-            type="number"
+            type="text"
             placeholder="Excluyentes, ingresar estimativos"
           />
         </Form.Group>
-
-        <Form.Group className="mb-3" controlId="celNumber">
-          <Form.Label>Cel para contactarte</Form.Label>
-          <Form.Control
-            type="number"
-            placeholder="Ingresá tu numero de cel!"
-            {...register("number", {
-              required: true,
-              minLength: 5,
-              maxLength: 10,
-            })}
-          />
-          {errors.number && (
-            <p className="text-danger">Campo obligatorio, 10 digitos max!</p>
-          )}
-        </Form.Group>
-        <Button variant="primary" type="submit" className="mb-3">
+        <Button
+          onClick={handleSubmit(postValidation)}
+          variant="primary"
+          type="submit"
+          className="mb-3"
+        >
           Submit
         </Button>
       </Form>
